@@ -1,0 +1,22 @@
+{
+  "name": "Stillness Meditation",
+  "short_name": "Stillness",
+  "description": "Your sanctuary of calm and mindfulness.",
+  "start_url": "./stillness-v2-1.html",
+  "display": "standalone",
+  "background_color": "#0a0c10",
+  "theme_color": "#c9a96e",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3663/3663335.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3663/3663335.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
