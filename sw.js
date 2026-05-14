@@ -1,6 +1,6 @@
 const CACHE_NAME = 'stillness-v1';
 const ASSETS = [
-  './stillness-v2-1.html',
+  './index.html',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap'
 ];
