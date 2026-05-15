@@ -458,7 +458,7 @@ nav button.active{color:var(--cream);background:rgba(201,169,110,.1);border:1px 
 <div class="shell">
 
 <header>
-  <div class="logo">Still<span>ness</span> <small style="font-size:8px; opacity:0.4; letter-spacing:0;">v1.2</small></div>
+  <div class="logo">Still<span>ness</span> <small style="font-size:8px; opacity:0.4; letter-spacing:0;">v1.3</small></div>
   <nav>
     <button class="active" onclick="showPage('home',this)">Home</button>
     <button onclick="showPage('sounds',this)">Sounds 🔊</button>
@@ -868,7 +868,7 @@ nav button.active{color:var(--cream);background:rgba(201,169,110,.1);border:1px 
   <div class="ag-box">
     <div class="ag-orb"></div>
     <div class="ag-logo">Still<span>ness</span></div>
-    <div class="ag-tagline">Your sanctuary of calm <span style="font-size:7px; opacity:0.3;">v1.2</span></div>
+    <div class="ag-tagline">Your sanctuary of calm <span style="font-size:7px; opacity:0.3;">v1.3</span></div>
     <div class="ag-tabs">
       <button class="ag-tab active" id="agTabSignIn" onclick="agSwitchTab('signin')">Sign In</button>
       <button class="ag-tab" id="agTabSignUp" onclick="agSwitchTab('signup')">Create Account</button>
@@ -1428,17 +1428,36 @@ document.addEventListener('keydown',function(e){
 });
 
 // ── Init: check for existing session ──
-(function initApp(){
+// ── Init: check for existing session ──
+function initApp(){
   const session=getSession();
-  if(session&&session.uid&&session.email&&session.name){
+  if(session&&session.uid){
     onAuthSuccess(session,false);
     loadStatsFromBackend(session.uid);
   }
   // Register Service Worker for PWA
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then(() => console.log('Service Worker Registered'));
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      console.log('Service Worker Registered');
+      reg.onupdatefound = () => {
+        const installingWorker = reg.installing;
+        installingWorker.onstatechange = () => {
+          if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showToast('New update available! Refreshing...');
+            setTimeout(() => window.location.reload(), 1500);
+          }
+        };
+      };
+    });
   }
-})();
+}
+
+// Ensure DOM is ready before init
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 </script>
 </body>
 </html>
