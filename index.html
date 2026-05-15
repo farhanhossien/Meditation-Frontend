@@ -527,12 +527,12 @@ nav button.active{color:var(--cream);background:rgba(201,169,110,.1);border:1px 
   </div>
   <div class="sessions-label" style="margin-top:18px;">Curated Sessions</div>
   <div class="sessions-grid">
-    <div class="sc" style="--ca:#7eb8b0" onclick="playSession(this,'Morning Clarity','rain')"><div class="ci">🌅</div><div class="cn">Morning Clarity</div><div class="cm">8 min · Breathwork</div><div class="ct">Focus</div></div>
-    <div class="sc" style="--ca:#c9a96e" onclick="playSession(this,'Deep Rest','night')"><div class="ci">🌙</div><div class="cn">Deep Rest</div><div class="cm">15 min · Body Scan</div><div class="ct">Sleep</div></div>
-    <div class="sc" style="--ca:#a9b8d0" onclick="playSession(this,'Anxiety Relief','ocean')"><div class="ci">🌊</div><div class="cn">Anxiety Relief</div><div class="cm">10 min · Grounding</div><div class="ct">Calm</div></div>
-    <div class="sc" style="--ca:#b8a9d0" onclick="playSession(this,'Creative Flow','forest')"><div class="ci">✨</div><div class="cn">Creative Flow</div><div class="cm">12 min · Visualisation</div><div class="ct">Energy</div></div>
-    <div class="sc" style="--ca:#c4768a" onclick="playSession(this,'Heart Opening','stream')"><div class="ci">💗</div><div class="cn">Heart Opening</div><div class="cm">10 min · Loving-Kindness</div><div class="ct">Compassion</div></div>
-    <div class="sc" style="--ca:#8aad8a" onclick="playSession(this,'Forest Walk','forest')"><div class="ci">🌲</div><div class="cn">Forest Walk</div><div class="cm">20 min · Nature Immersion</div><div class="ct">Grounding</div></div>
+    <div class="sc" style="--ca:#7eb8b0" onclick="playSession(this,'Morning Clarity','rain')" ondblclick="stopAllSounds()"><div class="ci">🌅</div><div class="cn">Morning Clarity</div><div class="cm">8 min · Breathwork</div><div class="ct">Focus</div></div>
+    <div class="sc" style="--ca:#c9a96e" onclick="playSession(this,'Deep Rest','night')" ondblclick="stopAllSounds()"><div class="ci">🌙</div><div class="cn">Deep Rest</div><div class="cm">15 min · Body Scan</div><div class="ct">Sleep</div></div>
+    <div class="sc" style="--ca:#a9b8d0" onclick="playSession(this,'Anxiety Relief','ocean')" ondblclick="stopAllSounds()"><div class="ci">🌊</div><div class="cn">Anxiety Relief</div><div class="cm">10 min · Grounding</div><div class="ct">Calm</div></div>
+    <div class="sc" style="--ca:#b8a9d0" onclick="playSession(this,'Creative Flow','forest')" ondblclick="stopAllSounds()"><div class="ci">✨</div><div class="cn">Creative Flow</div><div class="cm">12 min · Visualisation</div><div class="ct">Energy</div></div>
+    <div class="sc" style="--ca:#c4768a" onclick="playSession(this,'Heart Opening','stream')" ondblclick="stopAllSounds()"><div class="ci">💗</div><div class="cn">Heart Opening</div><div class="cm">10 min · Loving-Kindness</div><div class="ct">Compassion</div></div>
+    <div class="sc" style="--ca:#8aad8a" onclick="playSession(this,'Forest Walk','forest')" ondblclick="stopAllSounds()"><div class="ci">🌲</div><div class="cn">Forest Walk</div><div class="cm">20 min · Nature Immersion</div><div class="ct">Grounding</div></div>
   </div>
 </div>
 
@@ -977,6 +977,8 @@ function setVol(key,v){if(active[key])active[key].g.gain.setTargetAtTime(parseFl
 
 // Mix presets
 function applyMix(keys){getAC();Object.keys(active).forEach(k=>{const t=document.getElementById('t-'+k);if(t)toggleSnd(k,t);});keys.forEach(k=>{const t=document.getElementById('t-'+k);if(t&&!active[k])toggleSnd(k,t);});}
+
+function stopAllSounds(){Object.keys(active).forEach(k=>{const t=document.getElementById('t-'+k);if(t)toggleSnd(k,t);});document.querySelectorAll('.sc').forEach(c=>c.classList.remove('playing'));document.getElementById('stText').textContent='Ready to begin your practice';showToast('Session stopped ✕');}
 
 function ringBell(freq,evt){evt&&evt.stopPropagation();const ac=getAC(),now=ac.currentTime,g=ac.createGain();[[1,.4,4.2],[2.756,.2,2.8],[5.404,.1,1.9],[8.93,.05,1.3],[13.34,.02,.8]].forEach(([m,a,d])=>{const o=ac.createOscillator();o.type='sine';o.frequency.value=freq*m;const og=ac.createGain();og.gain.value=0;o.connect(og);og.connect(g);o.start(now);og.gain.setValueAtTime(a,now);og.gain.setTargetAtTime(0,now+.01,d);o.stop(now+d*7);});const del=ac.createDelay(.5);del.delayTime.value=.09;const fb=ac.createGain();fb.gain.value=.32;const rv=ac.createGain();rv.gain.value=.28;g.connect(del);del.connect(fb);fb.connect(del);del.connect(rv);g.connect(MG);rv.connect(MG);if(evt){const el=evt.currentTarget;el.style.boxShadow='0 0 20px rgba(201,169,110,.5)';setTimeout(()=>el.style.boxShadow='',800);}}
 function ringGong(evt){evt&&evt.stopPropagation();const ac=getAC(),now=ac.currentTime,g=ac.createGain();[[82,.5,7],[120,.3,5.5],[200,.2,4],[280,.15,3],[420,.08,2],[640,.04,1.5]].forEach(([f,a,d])=>{const o=ac.createOscillator();o.type='sine';o.frequency.value=f;const og=ac.createGain();og.gain.value=0;o.connect(og);og.connect(g);o.start(now);og.gain.setValueAtTime(a,now);og.gain.setTargetAtTime(0,now+.025,d);o.stop(now+d*7);});g.connect(MG);if(evt){const el=evt.currentTarget;el.style.boxShadow='0 0 28px rgba(201,169,110,.6)';setTimeout(()=>el.style.boxShadow='',1000);}}
