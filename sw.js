@@ -1,4 +1,4 @@
-const CACHE_NAME = 'stillness-v6';
+const CACHE_NAME = 'stillness-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -24,9 +24,14 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
-  
-  // Network First for index.html or navigation requests
-  if (e.request.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('index.html')) {
+
+  // Network First for HTML files and navigation
+  if (
+    e.request.mode === 'navigate' ||
+    url.pathname.endsWith('/') ||
+    url.pathname.endsWith('index.html') ||
+    url.pathname.endsWith('app.html')
+  ) {
     e.respondWith(
       fetch(e.request)
         .then((res) => {
@@ -44,4 +49,3 @@ self.addEventListener('fetch', (e) => {
     caches.match(e.request).then((res) => res || fetch(e.request))
   );
 });
-
