@@ -1089,7 +1089,9 @@ function runBP(){if(!breathing)return;const phases=breathPatterns[curPattern];co
 // ═══════════════════════════════════════════════════
 //  SESSIONS
 // ═══════════════════════════════════════════════════
-let curSessionSnd=null;function playSession(card,name,snd){document.querySelectorAll(".sc").forEach(c=>c.classList.remove("playing"));card.classList.add("playing");Object.keys(active).forEach(k=>{const t=document.getElementById("t-"+k);if(t)toggleSnd(k,t);});curSessionSnd=snd;playSoundFor(snd);document.getElementById("stText").textContent=`Now playing: ${name}`;}
+let curSessionSnd=null;function playSession(card,name,snd){document.querySelectorAll('.sc').forEach(c=>c.classList.remove('playing'));card.classList.add('playing');// Stop all active sounds immediately
+Object.keys(active).forEach(k=>{try{active[k].g.gain.setTargetAtTime(0,AC.currentTime,.2);const s=active[k];setTimeout(()=>{s.nodes.forEach(n=>{try{n.stop&&n.stop();n.disconnect&&n.disconnect();}catch(e){}});if(s.cleanup)s.cleanup();},600);const tile=document.getElementById('t-'+k);if(tile){tile.classList.remove('on');const vi=document.getElementById('v-'+k);if(vi)vi.disabled=true;}}catch(e){}delete active[k];});updInd();updStatus();curSessionSnd=snd;// Start new sound after brief pause
+setTimeout(()=>{playSoundFor(snd);document.getElementById('stText').textContent=`Now playing: ${name}`;},300);}
 
 // ═══════════════════════════════════════════════════
 //  TIMER
