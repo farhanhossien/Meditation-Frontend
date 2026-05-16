@@ -1089,7 +1089,7 @@ function runBP(){if(!breathing)return;const phases=breathPatterns[curPattern];co
 // ═══════════════════════════════════════════════════
 //  SESSIONS
 // ═══════════════════════════════════════════════════
-function playSession(card,name,snd){document.querySelectorAll('.sc').forEach(c=>c.classList.remove('playing'));card.classList.add('playing');playSoundFor(snd);document.getElementById('stText').textContent=`Now playing: ${name}`;}
+let curSessionSnd=null;function playSession(card,name,snd){document.querySelectorAll(".sc").forEach(c=>c.classList.remove("playing"));card.classList.add("playing");Object.keys(active).forEach(k=>{const t=document.getElementById("t-"+k);if(t)toggleSnd(k,t);});curSessionSnd=snd;playSoundFor(snd);document.getElementById("stText").textContent=`Now playing: ${name}`;}
 
 // ═══════════════════════════════════════════════════
 //  TIMER
