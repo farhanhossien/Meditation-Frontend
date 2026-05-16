@@ -1089,7 +1089,42 @@ function runBP(){if(!breathing)return;const phases=breathPatterns[curPattern];co
 // ═══════════════════════════════════════════════════
 //  SESSIONS
 // ═══════════════════════════════════════════════════
-function playSession(card,name,snd){document.querySelectorAll('.sc').forEach(c=>c.classList.remove('playing'));card.classList.add('playing');playSoundFor(snd);document.getElementById('stText').textContent=`Now playing: ${name}`;}
+let curSessionSnd=null;
+function playSession(card,name,snd){
+  getAC();
+  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('playing'));
+  card.classList.add('playing');
+  // Stop all currently playing sounds
+  const keysToStop=Object.keys(active);
+  keysToStop.forEach(k=>{
+    try{
+      active[k].g.gain.setTargetAtTime(0,AC.currentTime,.15);
+      const snap=active[k];
+      setTimeout(()=>{snap.nodes.forEach(n=>{try{n.stop&&n.stop();n.disconnect&&n.disconnect();}catch(e){}});if(snap.cleanup)snap.cleanup();},600);
+    }catch(e){}
+    delete active[k];
+    const tile=document.getElementById('t-'+k);if(tile)tile.classList.remove('on');
+    const vi=document.getElementById('v-'+k);if(vi)vi.disabled=true;
+  });
+  updInd();
+  curSessionSnd=snd;
+  // Start new sound after short pause
+  setTimeout(()=>{
+    if(!active[snd]){
+      const tile=document.getElementById('t-'+snd);
+      if(tile){
+        const s=recipes[snd]();
+        active[snd]=s;
+        tile.classList.add('on');
+        const vi=document.getElementById('v-'+snd);
+        if(vi)vi.disabled=false;
+        s.g.gain.setTargetAtTime(parseFloat(vi?vi.value:0.5),AC.currentTime,.3);
+        updInd();updStatus();
+      }
+    }
+    document.getElementById('stText').textContent=`Now playing: ${name}`;
+  },250);
+}
 
 // ═══════════════════════════════════════════════════
 //  TIMER
