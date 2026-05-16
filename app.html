@@ -1089,7 +1089,27 @@ function runBP(){if(!breathing)return;const phases=breathPatterns[curPattern];co
 // ═══════════════════════════════════════════════════
 //  SESSIONS
 // ═══════════════════════════════════════════════════
-function playSession(card,name,snd){document.querySelectorAll('.sc').forEach(c=>c.classList.remove('playing'));card.classList.add('playing');playSoundFor(snd);document.getElementById('stText').textContent=`Now playing: ${name}`;}
+function playSession(card,name,snd){
+  // Stop all currently active sounds first
+  if(AC){
+    Object.keys(active).forEach(k=>{
+      try{
+        active[k].g.gain.setTargetAtTime(0,AC.currentTime,.1);
+        const s=active[k];
+        setTimeout(()=>{s.nodes.forEach(n=>{try{n.stop&&n.stop();n.disconnect&&n.disconnect();}catch(e){}});if(s.cleanup)s.cleanup();},500);
+      }catch(e){}
+      delete active[k];
+      const tile=document.getElementById('t-'+k);
+      if(tile)tile.classList.remove('on');
+      const vi=document.getElementById('v-'+k);
+      if(vi)vi.disabled=true;
+    });
+  }
+  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('playing'));
+  card.classList.add('playing');
+  playSoundFor(snd);
+  document.getElementById('stText').textContent=`Now playing: ${name}`;
+}
 
 // ═══════════════════════════════════════════════════
 //  TIMER
